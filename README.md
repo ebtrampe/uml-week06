@@ -1,3 +1,3 @@
 # Week06 exercise repository
 
-### Test trigger 5 on main
+### Test trigger 6 on main
