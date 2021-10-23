@@ -10,12 +10,12 @@ pipeline {
         }
     }
     stages {
-        // stage('build') {
-        //     steps {
-        //         chmod +x gradlew
-        //         ./gradlew test
-        //     }
-        // }
+        stage('build') {
+            steps {
+                chmod +x gradlew
+                ./gradlew test
+            }
+        }
         stage('debug') {
             steps {
                 echo env.GIT_BRANCH
@@ -30,13 +30,13 @@ pipeline {
             }
             steps {
                 echo "I am a feature branch"
-                // echo 'Running Checkstyle'
-                // ./gradlew checkstyleMain
-                // publishHTML (target: [
-                //     reportDir: 'Chapter08/sample1/build/reports/jacoco/checkstyle',
-                //     reportFiles: 'main.html',
-                //     reportName: "JaCoCo Checkstyle report"
-                // ])
+                echo 'Running Checkstyle'
+                ./gradlew checkstyleMain
+                publishHTML (target: [
+                    reportDir: 'Chapter08/sample1/build/reports/jacoco/checkstyle',
+                    reportFiles: 'main.html',
+                    reportName: "JaCoCo Checkstyle report"
+                ])
             }
         }
         stage('main') {
@@ -47,21 +47,21 @@ pipeline {
             }
             steps {
                 echo "I am a main branch"
-                // echo 'Running CodeCoverage test'
-                // ./gradlew jacocoTestCoverageVerification
-                // ./gradlew jacocoTestReport
-                // publishHTML (target: [ 
-                //     reportDir: 'Chapter08/sample1/build/reports/jacoco/test/html',
-                //     reportFiles: 'index.html',
-                //     reportName: "JaCoCo Report"
-                // ])
-                // echo 'Running Checkstyle'
-                // ./gradlew checkstyleMain
-                // publishHTML (target: [ 
-                //     reportDir: 'Chapter08/sample1/build/reports/jacoco/checkstyle',
-                //     reportFiles: 'main.html',
-                //     reportName: "JaCoCo Checkstyle report"
-                // ])
+                echo 'Running CodeCoverage test'
+                ./gradlew jacocoTestCoverageVerification
+                ./gradlew jacocoTestReport
+                publishHTML (target: [ 
+                    reportDir: 'Chapter08/sample1/build/reports/jacoco/test/html',
+                    reportFiles: 'index.html',
+                    reportName: "JaCoCo Report"
+                ])
+                echo 'Running Checkstyle'
+                ./gradlew checkstyleMain
+                publishHTML (target: [ 
+                    reportDir: 'Chapter08/sample1/build/reports/jacoco/checkstyle',
+                    reportFiles: 'main.html',
+                    reportName: "JaCoCo Checkstyle report"
+                ])
             }
         }
     }
