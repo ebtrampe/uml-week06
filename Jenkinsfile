@@ -58,14 +58,18 @@ spec:
                 ./gradlew jacocoTestReport
                 '''
                 publishHTML (target: [ 
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: false,
                     reportDir: './build/reports/jacoco/test/html', 
                     reportFiles: 'index.html', 
                     reportName: "JaCoCo Report" 
                 ])
                 sh './gradlew checkstyleMain'
                 publishHTML (target: [ 
-                    reportDir: './build/reports/jacoco/checkstyle', 
-                    reportFiles: 'main.html', 
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: false,
+                    reportDir: './checkstyle', 
+                    reportFiles: 'index.html', 
                     reportName: "JaCoCo Checkstyle report" 
                 ])
             }
