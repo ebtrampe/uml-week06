@@ -2,10 +2,10 @@ pipeline {
     agent {
         kubernetes {
             yaml '''
-            spec:
-              containers:
-              - name: gradle
-                image: gradle:6.3-jdk14
+spec:
+  containers:
+  - name: gradle
+    image: gradle:6.3-jdk14
             '''
         }
     }
@@ -19,12 +19,12 @@ pipeline {
         stage('feature') {
             when {
                 expression {
-                    return env.GIT_BRANCH == 'origin/feature/*'
+                    return env.GIT_BRANCH == 'origin/feature'
                 }
             }
             steps {
-                echo "I am a feature branch"
-                echo 'Running Checkstyle'
+                echo 'I am a feature branch'
+            }
         }
         stage('main') {
             when {
@@ -33,8 +33,8 @@ pipeline {
                 }
             }
             steps {
-                echo 'I am a main branch'
-                echo 'Running CodeCoverage test'
+                echo 'I am the main branch'
+            }
         }
     }
 }
