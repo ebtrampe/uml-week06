@@ -39,7 +39,7 @@ spec:
                 echo 'I am a feature branch. Only checkstyles will be executed in this branch.'
                 sh './gradlew checkstyleMain'
                 publishHTML (target: [ 
-                    reportDir: 'Chapter08/sample1/build/reports/jacoco/checkstyle', 
+                    reportDir: './build/reports/jacoco/checkstyle', 
                     reportFiles: 'main.html', 
                     reportName: "JaCoCo Checkstyle report" 
                 ])
@@ -64,7 +64,7 @@ spec:
                 ])
                 sh './gradlew checkstyleMain'
                 publishHTML (target: [ 
-                    reportDir: 'Chapter08/sample1/build/reports/jacoco/checkstyle', 
+                    reportDir: './build/reports/jacoco/checkstyle', 
                     reportFiles: 'main.html', 
                     reportName: "JaCoCo Checkstyle report" 
                 ])
