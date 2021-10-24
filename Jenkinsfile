@@ -9,10 +9,10 @@ spec:
     resources:
       limits:
         memory: "1024Mi"
-        cpu: "300m"
+        cpu: "500m"
       requests:
         memory: "512Mi"
-        cpu: "500m"
+        cpu: "300m"
             '''
         }
     }
