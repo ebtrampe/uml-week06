@@ -14,6 +14,12 @@ spec:
         }
     }
     stages {
+        stage('build') {
+            steps {
+                chmod +x gradlew
+                ./gradlew test
+            }
+        }
         stage('debug') {
             steps {
                 echo 'debugging'
@@ -28,7 +34,13 @@ spec:
                 }
             }
             steps {
-                echo 'I am a feature branch'
+                echo 'I am a feature branch. Only checkstyles will be executed in this branch.'
+                ./gradlew checkstyleMain
+                publishHTML (target: [ 
+                    reportDir: 'Chapter08/sample1/build/reports/jacoco/checkstyle', 
+                    reportFiles: 'main.html', 
+                    reportName: "JaCoCo Checkstyle report" 
+                ])
             }
         }
         stage('main') {
@@ -38,7 +50,20 @@ spec:
                 }
             }
             steps {
-                echo 'I am the main branch'
+                echo 'I am the main branch. I run all the tests.'
+                ./gradlew jacocoTestCoverageVerification
+                ./gradlew jacocoTestReport
+                publishHTML (target: [ 
+                    reportDir: 'Chapter08/sample1/build/reports/jacoco/test/html', 
+                    reportFiles: 'index.html', 
+                    reportName: "JaCoCo Report" 
+                ])
+                ./gradlew checkstyleMain
+                publishHTML (target: [ 
+                    reportDir: 'Chapter08/sample1/build/reports/jacoco/checkstyle', 
+                    reportFiles: 'main.html', 
+                    reportName: "JaCoCo Checkstyle report" 
+                ])
             }
         }
     }
