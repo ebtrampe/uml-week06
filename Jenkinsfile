@@ -6,13 +6,6 @@ spec:
   containers:
   - name: gradle
     image: gradle:6.3-jdk14
-    resources:
-      limits:
-        memory: "1024Mi"
-        cpu: "500m"
-      requests:
-        memory: "512Mi"
-        cpu: "300m"
             '''
         }
     }
