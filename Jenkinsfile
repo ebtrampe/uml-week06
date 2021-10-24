@@ -16,8 +16,10 @@ spec:
     stages {
         stage('build') {
             steps {
+                sh '''
                 chmod +x gradlew
                 ./gradlew test
+                '''
             }
         }
         stage('debug') {
@@ -35,7 +37,7 @@ spec:
             }
             steps {
                 echo 'I am a feature branch. Only checkstyles will be executed in this branch.'
-                ./gradlew checkstyleMain
+                sh './gradlew checkstyleMain'
                 publishHTML (target: [ 
                     reportDir: 'Chapter08/sample1/build/reports/jacoco/checkstyle', 
                     reportFiles: 'main.html', 
@@ -51,14 +53,16 @@ spec:
             }
             steps {
                 echo 'I am the main branch. I run all the tests.'
+                sh '''
                 ./gradlew jacocoTestCoverageVerification
                 ./gradlew jacocoTestReport
+                '''
                 publishHTML (target: [ 
                     reportDir: 'Chapter08/sample1/build/reports/jacoco/test/html', 
                     reportFiles: 'index.html', 
                     reportName: "JaCoCo Report" 
                 ])
-                ./gradlew checkstyleMain
+                sh './gradlew checkstyleMain'
                 publishHTML (target: [ 
                     reportDir: 'Chapter08/sample1/build/reports/jacoco/checkstyle', 
                     reportFiles: 'main.html', 
