@@ -12,6 +12,7 @@ spec:
     stages {
         stage('debug') {
             steps {
+                echo 'debugging'
                 echo env.GIT_BRANCH
                 echo env.GIT_LOCAL_BRANCH
             }
