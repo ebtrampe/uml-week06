@@ -7,10 +7,10 @@ spec:
   - name: gradle
     image: gradle:6.3-jdk14
     resources:
-      requests:
+      limits:
         memory: "1024Mi"
         cpu: "300m"
-      limits:
+      requests:
         memory: "512Mi"
         cpu: "500m"
             '''
