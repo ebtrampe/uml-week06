@@ -68,7 +68,7 @@ spec:
                 publishHTML (target: [ 
                     allowMissing: false,
                     alwaysLinkToLastBuild: false,
-                    reportDir: './checkstyle', 
+                    reportDir: './build/reports/jacoco/checkstyle', 
                     reportFiles: 'index.html', 
                     reportName: "JaCoCo Checkstyle report" 
                 ])
