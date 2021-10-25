@@ -127,8 +127,6 @@ spec:
                     container('kaniko') {
                         sh '''
                         pwd
-                        ls -al /mnt
-                        ls -al ${pwd}
                         echo 'FROM openjdk:8-jre' > Dockerfile
                         echo 'COPY ./calculator-0.0.1-SNAPSHOT.jar app.jar' >> Dockerfile
                         echo 'ENTRYPOINT ["java", "-jar", "app.jar"]' >> Dockerfile
