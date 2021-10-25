@@ -47,19 +47,17 @@ spec:
         TAG = "${env.GIT_BRANCH == 'origin/main' ? '1.0' : '0.1'}"
     }
     stages {
-        stage('Build Gradle') {
+        stage('Make gradle binary executable') {
             when {
                 expression {
                     return env.GIT_BRANCH != 'origin/playground'
                 }
             }
             steps {
+                echo env.NAME
+                echo env.TAG
                 sh '''
                 chmod +x gradlew
-                ./gradlew build
-                ls -al ./build/libs/
-                cp ./build/libs/calculator-0.0.1-SNAPSHOT.jar /mnt/
-                ls -al /mnt
                 '''
             }
         }
@@ -115,16 +113,26 @@ spec:
                 }
             }
             steps {
-                container('kaniko') {
-                    sh '''
-                    pwd
-                    ls -al /mnt
-                    echo 'FROM openjdk:8-jre' > Dockerfile
-                    echo 'COPY /mnt/calculator-0.0.1-SNAPSHOT.jar .' >> Dockerfile
-                    echo 'ENTRYPOINT ["java", "-jar", "app.jar"]' >> Dockerfile
-                    mv /mnt/calculator-0.0.1-SNAPSHOT.jar /mnt/app.jar
-                    /kaniko/executor --context `pwd` --destination ebtrampe/${NAME}:${TAG}
-                    '''
+                sh '''
+                ./gradlew build
+                ls -al ./build/libs/
+                cp ./build/libs/calculator-0.0.1-SNAPSHOT.jar /mnt/
+                ls -al /mnt
+                '''
+            }
+            post {
+                success {
+                    container('kaniko') {
+                        sh '''
+                        pwd
+                        ls -al /mnt
+                        echo 'FROM openjdk:8-jre' > Dockerfile
+                        echo 'COPY /mnt/calculator-0.0.1-SNAPSHOT.jar .' >> Dockerfile
+                        echo 'ENTRYPOINT ["java", "-jar", "app.jar"]' >> Dockerfile
+                        mv /mnt/calculator-0.0.1-SNAPSHOT.jar /mnt/app.jar
+                        /kaniko/executor --context `pwd` --destination ebtrampe/${NAME}:${TAG}
+                        '''
+                    }
                 }
             }
         }
