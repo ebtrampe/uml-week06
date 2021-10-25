@@ -67,7 +67,7 @@ spec:
             post {
                 success {
                     publishHTML (target: [ 
-                        reportDir: './build/reports/jacoco/checkstyle', 
+                        reportDir: './build/reports/checkstyle', 
                         reportFiles: 'main.html', 
                         reportName: "JaCoCo Checkstyle report" 
                     ])
