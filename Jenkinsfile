@@ -115,6 +115,7 @@ spec:
             }
             steps {
                 sh '''
+                pwd
                 ./gradlew build
                 ls -al ./build/libs/
                 cp ./build/libs/calculator-0.0.1-SNAPSHOT.jar /mnt/
@@ -128,9 +129,9 @@ spec:
                         pwd
                         ls -al /mnt
                         echo 'FROM openjdk:8-jre' > Dockerfile
-                        echo 'COPY /mnt/calculator-0.0.1-SNAPSHOT.jar .' >> Dockerfile
+                        echo 'COPY /mnt/calculator-0.0.1-SNAPSHOT.jar app.jar' >> Dockerfile
                         echo 'ENTRYPOINT ["java", "-jar", "app.jar"]' >> Dockerfile
-                        mv /mnt/calculator-0.0.1-SNAPSHOT.jar /mnt/app.jar
+                        mv /mnt/calculator-0.0.1-SNAPSHOT.jar .
                         /kaniko/executor --context `pwd` --destination ebtrampe/${NAME}:${TAG}
                         '''
                     }
