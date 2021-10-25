@@ -118,7 +118,7 @@ spec:
                 pwd
                 ./gradlew build
                 ls -al ./build/libs/
-                cp ./build/libs/calculator-0.0.1-SNAPSHOT.jar ${pwd}
+                cp ./build/libs/calculator-0.0.1-SNAPSHOT.jar .
                 ls -al ${pwd}
                 '''
             }
