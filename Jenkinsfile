@@ -58,6 +58,7 @@ spec:
                 echo env.TAG
                 sh '''
                 chmod +x gradlew
+                ./gradlew test
                 '''
             }
         }
