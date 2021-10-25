@@ -16,7 +16,7 @@ spec:
     - 30d
     volumeMounts:
     - name: shared-storage
-      mountPath: /mnt
+      mountPath: '/mnt'
   - name: kaniko
     image: gcr.io/kaniko-project/executor:debug
     command:
@@ -25,7 +25,7 @@ spec:
     - 9999999
     volumeMounts:
     - name: shared-storage
-      mountPath: /mnt
+      mountPath: '/mnt'
     - name: kaniko-secret
       mountPath: /kaniko/.docker
   restartPolicy: Never
@@ -122,7 +122,7 @@ spec:
                     echo 'FROM openjdk:8-jre' > Dockerfile
                     echo 'COPY /mnt/calculator-0.0.1-SNAPSHOT.jar .' >> Dockerfile
                     echo 'ENTRYPOINT ["java", "-jar", "app.jar"]' >> Dockerfile
-                    mv /mnt/calculator-0.0.1-SNAPSHOT.jar app.jar
+                    mv /mnt/calculator-0.0.1-SNAPSHOT.jar /mnt/app.jar
                     /kaniko/executor --context `pwd` --destination ebtrampe/${NAME}:${TAG}
                     '''
                 }
