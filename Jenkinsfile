@@ -55,7 +55,8 @@ spec:
                 sh '''
                 chmod +x gradlew
                 ./gradlew build
-                mv ./build/libs/calculator-0.0.1-SNAPSHOT.jar /mnt
+                ls -al ./build/libs/
+                cp ./build/libs/calculator-0.0.1-SNAPSHOT.jar /mnt/
                 '''
             }
         }
