@@ -2,6 +2,8 @@ pipeline {
     agent {
         kubernetes {
             yaml '''
+apiVersion: v1
+kind: Pod
 spec:
   containers:
   - name: gradle
@@ -10,23 +12,51 @@ spec:
     - sleep
     args:
     - 30d
+    volumeMounts:
+    - name: shared-storage
+      mountPath: /mnt
+  - name: kaniko
+    image: gcr.io/kaniko-project/executor:debug
+    command:
+    - sleep
+    args:
+    - 9999999
+    volumeMounts:
+    - name: shared-storage
+      mountPath: /mnt
+    - name: kaniko-secret
+      mountPath: /kaniko/.docker
+  restartPolicy: Never
+  volumes:
+  - name: shared-storage
+    persistentVolumeClaim:
+      claimName: jenkins-pv-claim
+  - name: kaniko-secret
+    secret:
+      secretName: dockercred
+      items:
+      - key: .dockerconfigjson
+        path: config.json
             '''
         }
     }
+    environment {
+        NAME = "${env.GIT_BRANCH == 'origin/main' ? 'calculator' : 'calculator-feature'}"
+        TAG = "${env.GIT_BRANCH == 'origin/main' ? '1.0' : '0.1'}"
+    }
     stages {
         stage('Build Gradle') {
+            when {
+                expression {
+                    return env.GIT_BRANCH != 'origin/playground'
+                }
+            }
             steps {
                 sh '''
                 chmod +x gradlew
-                ./gradlew test
+                ./gradlew build
+                mv ./build/libs/calculator-0.0.1-SNAPSHOT.jar /mnt
                 '''
-            }
-        }
-        stage('debug') {
-            steps {
-                echo 'debugging'
-                echo env.GIT_BRANCH
-                echo env.GIT_LOCAL_BRANCH
             }
         }
         stage('Code Coverage') {
@@ -74,6 +104,23 @@ spec:
                 }
             }
         }
-
+        stage('Build Java Image') {
+            when {
+                expression {
+                    return env.GIT_BRANCH == 'origin/main' || env.GIT_BRANCH == 'origin/feature' 
+                }
+            }
+            steps {
+                container('kaniko') {
+                    sh '''
+                    echo 'FROM openjdk:8-jre' > Dockerfile
+                    echo 'COPY /mnt/calculator-0.0.1-SNAPSHOT.jar .' >> Dockerfile
+                    echo 'ENTRYPOINT ["java", "-jar", "app.jar"]' >> Dockerfile
+                    mv /mnt/calculator-0.0.1-SNAPSHOT.jar app.jar
+                    /kaniko/executor --context `pwd` --destination ebtrampe/${NAME}:${TAG}
+                    '''
+                }
+            }
+        }
     }
 }
