@@ -14,7 +14,7 @@ spec:
         }
     }
     stages {
-        stage('build') {
+        stage('Build Gradle') {
             steps {
                 sh '''
                 chmod +x gradlew
@@ -29,50 +29,51 @@ spec:
                 echo env.GIT_LOCAL_BRANCH
             }
         }
-        stage('feature') {
-            when {
-                expression {
-                    return env.GIT_BRANCH == 'origin/feature'
-                }
-            }
-            steps {
-                echo 'I am a feature branch. Only checkstyles will be executed in this branch.'
-                sh './gradlew checkstyleMain'
-                publishHTML (target: [ 
-                    reportDir: './build/reports/jacoco/checkstyle', 
-                    reportFiles: 'main.html', 
-                    reportName: "JaCoCo Checkstyle report" 
-                ])
-            }
-        }
-        stage('main') {
+        stage('Code Coverage') {
             when {
                 expression {
                     return env.GIT_BRANCH == 'origin/main'
                 }
             }
             steps {
-                echo 'I am the main branch. I run all the tests.'
+                echo 'This test runs on the main branch only'
                 sh '''
                 ./gradlew jacocoTestCoverageVerification
                 ./gradlew jacocoTestReport
                 '''
-                publishHTML (target: [ 
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: false,
-                    reportDir: './build/reports/jacoco/test/html', 
-                    reportFiles: 'index.html', 
-                    reportName: "JaCoCo Report" 
-                ])
-                sh './gradlew checkstyleMain'
-                publishHTML (target: [ 
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: false,
-                    reportDir: './build/reports/jacoco/checkstyle', 
-                    reportFiles: 'index.html', 
-                    reportName: "JaCoCo Checkstyle report" 
-                ])
+            }
+            post {
+                success {
+                    publishHTML (target: [ 
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: false,
+                        reportDir: './build/reports/jacoco/test/html', 
+                        reportFiles: 'index.html', 
+                        reportName: "JaCoCo Report" 
+                    ])
+                }
             }
         }
+        stage('Checkstyle') {
+            when {
+                expression {
+                    return env.GIT_BRANCH == 'origin/main' || env.GIT_BRANCH == 'origin/feature'
+                }
+            }
+            steps {
+                echo 'This test runs on both main and feature branches.'
+                sh './gradlew checkstyleMain'
+            }
+            post {
+                success {
+                    publishHTML (target: [ 
+                        reportDir: './build/reports/checkstyle', 
+                        reportFiles: 'main.html', 
+                        reportName: "JaCoCo Checkstyle report" 
+                    ])
+                }
+            }
+        }
+
     }
 }
