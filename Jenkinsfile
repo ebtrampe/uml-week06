@@ -5,6 +5,8 @@ pipeline {
 apiVersion: v1
 kind: Pod
 spec:
+  securityContext:
+    runAsUser: 0
   containers:
   - name: gradle
     image: gradle:6.3-jdk14
